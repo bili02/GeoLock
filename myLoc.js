@@ -1,4 +1,5 @@
 var map;
+var watchId = null;
 
 function showMap(coords){
 	var googleLatAndLong = 
@@ -56,7 +57,10 @@ window.onload = getMyLocation;
 
 function getMyLocation() {
 	if (navigator.geolocation){
-		navigator.geolocation.getCurrentPosition(displayLocation, displayError);
+		var watchButton = document.getElementById("watch");
+		watchButton.onclick = watchLocation;
+		var clearWatchButton = document.getElementById("clearWatch");
+		clearWatchButton.onclick = clearWatch;
 
 	}
 
@@ -122,5 +126,18 @@ function displayLocation(positon){
 	var distance = document.getElementById("distance");
 	distance.innerHTML = "jesteś " + km + " km od siedziby Helionu";
 
-	showMap(positon.coords);
+	if (map == null) {
+		showMap(positon.coords);
+	}
+}
+//funkcja śledzenia
+function watchLocation() {
+	watchId = navigator.geolocation.watchPosition(displayLocation,
+		displayError);
+}
+function clearWatch(){
+	if (watchId){
+		navigator.geolocation.clearWatch(watchId);
+		watchId = null;
+	}
 }
