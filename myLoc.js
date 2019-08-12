@@ -7,14 +7,39 @@ function showMap(coords){
 	var mapOptions = {
 		zoom: 10, 
 		center: googleLatAndLong,
-		mapTypeId: google.maps.MapTypeId.SATELLITE
+		mapTypeId: google.maps.MapTypeId.ROADMAP
 
 	};
 	var mapDiv = document.getElementById("map");
 	map = new google.maps.Map(mapDiv, mapOptions);
+
+	var title = "Twoja lokalizacja";
+	var content = "Jesteś tu: " + coords.latitude + ", " + coords.longitude;
+	addMarker(map, googleLatAndLong, title, content);
 }
+//pinezki
+function addMarker(map, latlong, title, content) {
+	var markerOptions = {
+		position: latlong,
+		map: map,
+		title: title,
+		clickable: true
+	}
+	var marker = new google.maps.Marker(markerOptions);
+    
+    var infoWindowOptions = {
+    	content: content,
+    	positon: latlong
+    };
+
+    var infoWindow = new google.maps.InfoWindow(infoWindowOptions);
+
+    google.maps.event.addListener(marker, "click", function() {
+    	infoWindow.open(map);
+    })
 
 
+}
 
 
 
@@ -91,6 +116,7 @@ function displayLocation(positon){
 
 	var div = document.getElementById("location");
 	div.innerHTML = "Jesteś na szerokości " + latitude + " i długości " + longitude;
+    div.innerHTML += "  (z dokładnością do " + positon.coords.accuracy + " m)";
 
 	var km = computeDistance(positon.coords, ourCoords);
 	var distance = document.getElementById("distance");
